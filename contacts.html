@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Contact Points - MCAST Library</title>
+<meta name="description" content="Get in touch with MCAST Library staff and find our contact information." />
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --brand:#000043;
+  --brand-2:#0b0b6a;
+  --brand-light: #1a1a8a;
+  --accent: #ff7b25;
+  --accent-light: #ff9d5c;
+  --accent-dark: #e06a1a;
+  --bg:#ffffff;
+  --text:#17202a;
+  --muted:#93a3b8;
+  --card:#0b0b6a;
+  --radius:18px;
+  --shadow:0 10px 28px rgba(2,6,23,.10);
+  --shadow-lg:0 24px 60px rgba(2,6,23,.18);
+  --ring:0 0 0 .2rem rgba(255, 123, 37, 0.3);
+  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*{ box-sizing:border-box; }
+:focus{ outline:2px solid transparent; box-shadow:var(--ring); }
+html,body{ height:100%; }
+body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
+.container{ width:min(1200px, 92vw); margin-inline:auto; }
+.hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); }
+
+@media (prefers-reduced-motion:no-preference){
+  .rise-in{ animation:rise .5s ease both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+  .fade-in{ animation:fadeIn .7s ease both; }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+}
+
+/* Header */
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(180%) blur(8px);
+  background:color-mix(in srgb, var(--brand) 94%, transparent);
+  color:#fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 0; }
+.brand{ display:flex; align-items:center; gap:.75rem; text-decoration:none; color:#fff; font-weight:700; transition: var(--transition); }
+.brand:hover { transform: translateY(-2px); }
+.brand img{ height:40px; width:auto; transition: var(--transition); }
+.brand:hover img { transform: scale(1.05); }
+.brand span{ letter-spacing:.4px; font-family:Montserrat, Inter, sans-serif; }
+.menu{ display:flex; gap:1.25rem; align-items:center; }
+.menu a{ color:#ffffff; text-decoration:none; font-weight:600; font-family:Montserrat, Inter, sans-serif; font-size:.95rem; opacity:.92; transition: var(--transition); position: relative; padding: 0.5rem 0; }
+.menu a:hover{ opacity:1; transform: translateY(-2px); }
+.menu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+.menu a:hover::after {
+  width: 100%;
+}
+.menu a[style*="background"] { 
+  background: white !important;
+  color: black !important;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.menu a[style*="background"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.7s ease;
+}
+.menu a[style*="background"]:hover::before {
+  left: 100%;
+}
+#nav-toggle{ appearance:none; position:absolute; left:-9999px; }
+.burger{ display:none; gap:.5rem; align-items:center; color:#fff; padding:.5rem .75rem; border:1px solid rgba(255,255,255,.25); border-radius:10px; cursor:pointer; transition: var(--transition); }
+.burger:hover { background: rgba(255,255,255,0.1); }
+.burger svg{ width:20px; height:20px; }
+@media (max-width:900px){
+  .menu{ position:fixed; inset:64px 0 auto 0; background:var(--brand); flex-direction:column; padding:1rem; transform:translateY(-120%); transition:transform .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  #nav-toggle:checked ~ .menu{ transform:translateY(0); }
+  .burger{ display:flex; }
+}
+
+/* Hero with background image + darker overlay for contrast */
+.hero{
+  position:relative; color:#fff;
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+  background-image: linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("images/library.jpg");
+  background-size: cover; background-position:center; background-repeat:no-repeat;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(11, 11, 106, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 123, 37, 0.2) 0%, transparent 40%);
+  z-index: 0;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero h1{ font:700 clamp(1.75rem, 2vw + 1rem, 2.4rem)/1.15 Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; letter-spacing:.2px; }
+.hero .kicker{ display:inline-block; font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; opacity:.9; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; margin-bottom: 1rem; }
+
+/* Main content sections */
+.section-wrap{ padding: clamp(1.75rem, 3vw, 2.75rem) 0; }
+h2.section{ font:700 1.25rem Montserrat, Inter, sans-serif; letter-spacing:.2px; margin:0 0 1rem; color:var(--text); position: relative; display: inline-block; }
+h2.section::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Content styling */
+.content-section {
+  background: #f8fafc;
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+}
+.content-link {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  padding: 0.1rem 0;
+}
+.content-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.content-link.email {
+  color: var(--accent);
+}
+.content-link.email:hover {
+  color: var(--accent-dark);
+}
+
+/* Contact cards */
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.contact-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent);
+  transition: var(--transition);
+}
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.contact-card h3 {
+  margin-top: 0;
+  color: var(--brand);
+  font-family: Montserrat, Inter, sans-serif;
+}
+.contact-role {
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Staff grid */
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.staff-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border: 1px solid #e2e8f0;
+}
+.staff-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.staff-name {
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 0.5rem;
+  font-family: Montserrat, Inter, sans-serif;
+}
+.staff-role {
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* Quick links grid */
+.quick-links-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:1.5rem; }
+@media (max-width:1050px){ .quick-links-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width:680px){ .quick-links-grid{ grid-template-columns:1fr; } }
+
+/* Quick link cards */
+.quick-link-card{
+  display:block; text-decoration:none; color:#fff;
+  background: radial-gradient(100% 140% at 100% 0%, var(--card) 0%, var(--brand) 70%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition: var(--transition);
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+.quick-link-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,123,37,0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.quick-link-card:hover::before {
+  opacity: 1;
+}
+.quick-link-card:focus-visible{ box-shadow:var(--ring), var(--shadow-lg); }
+.quick-link-card:hover{ transform: translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(255,255,255,.18); background: radial-gradient(100% 140% at 100% 0%, var(--brand-light) 0%, var(--brand) 70%); }
+
+/* icon bar */
+.quick-link-card .thumb{
+  display:flex; align-items:center; gap:.9rem;
+  padding:1.1rem 1.1rem .6rem;
+  position: relative;
+  z-index: 1;
+}
+.icon{
+  width:54px; height:54px; flex:0 0 54px;
+  border-radius:14px; display:grid; place-items:center;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  transition: var(--transition);
+}
+.quick-link-card:hover .icon {
+  transform: scale(1.1);
+  background: rgba(255,123,37,0.2);
+  border-color: rgba(255,123,37,0.4);
+}
+.icon svg{ width:28px; height:28px; color:#fff; transition: var(--transition); }
+.quick-link-card:hover .icon svg {
+  transform: scale(1.1);
+  color: var(--accent-light);
+}
+
+/* text */
+.quick-link-card h3{ margin:.2rem 1.1rem 0; font:700 1.05rem Montserrat, Inter, sans-serif; color:#fff; letter-spacing:.2px; position: relative; z-index: 1; transition: var(--transition); }
+.quick-link-card:hover h3 {
+  transform: translateX(5px);
+  color: var(--accent-light);
+}
+
+/* Info boxes */
+.info-box {
+  background: #f1f5f9;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.info-box h4 {
+  margin-top: 0;
+  color: var(--brand);
+  font-family: Montserrat, Inter, sans-serif;
+}
+
+/* Footer */
+footer{ background:#0b0b3a; color:#cbd5e1; margin-top:2rem; padding: clamp(2rem, 4vw, 3rem) 0; position: relative; overflow: hidden; }
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(11, 11, 106, 0.4) 0%, transparent 50%);
+  z-index: 0;
+}
+footer .container {
+  position: relative;
+  z-index: 1;
+}
+footer a{ color:#fff; text-decoration:none; transition: var(--transition); display: inline-block; }
+footer a:hover{ color: var(--accent-light); text-decoration:underline; transform: translateX(3px); }
+.footer-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:1.5rem; }
+.footer-grid h4{ color:#fff; font:700 1rem Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; position: relative; display: inline-block; }
+.footer-grid h4::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.footer-grid li{ list-style:none; margin:.45rem 0; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.12); margin-top:1.5rem; padding-top:.75rem; font-size:.9rem; display:flex; gap:.75rem; justify-content:space-between; flex-wrap:wrap; }
+@media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .footer-grid{ grid-template-columns:1fr; } }
+
+/* Back button */
+.back-button{ display:inline-flex; align-items:center; gap:.5rem; background:var(--brand); color:#fff; padding:.75rem 1.5rem; border-radius:999px; text-decoration:none; font-weight:600; transition:var(--transition); margin-top:2rem; }
+.back-button:hover{ background:var(--brand-light); transform:translateY(-2px); }
+.back-button svg{ width:16px; height:16px; }
+</style>
+</head>
+
+<body>
+<a href="#main" class="hidden">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <img alt="MCAST" src="https://mcast.edu.mt/wp-content/uploads/New_Logo4-1.png" />
+      <span>MCAST Library</span>
+    </a>
+
+    <label for="nav-toggle" class="burger" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Menu
+    </label>
+    <input id="nav-toggle" type="checkbox" aria-hidden="true">
+
+    <nav class="menu" aria-label="Primary">
+      <a href="index.html#search">Search</a>
+      <a href="index.html#tiles">Help & Services</a>
+      <a href="index.html#hours">Opening Hours</a>
+      <a href="https://mcast.primo.exlibrisgroup.com/discovery/search?vid=356MCAST_INST:MCAST" style="background:#ffffff; color:var(--brand); padding:.45rem .75rem; border-radius:999px; font-weight:800;">Library Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO: contact points intro -->
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Get in Touch</span>
+    <h1>Library Contact Points</h1>
+    <p>Find the right person to help with your library queries and needs.</p>
+  </div>
+</section>
+
+<main id="main" class="container">
+  <!-- Quick links section -->
+  <section class="section-wrap">
+    <h2 class="section">Quick Contact Options</h2>
+    <div class="quick-links-grid">
+      <!-- General Enquiries -->
+      <a class="quick-link-card fade-in" href="mailto:llrc@mcast.edu.mt" aria-label="General Enquiries">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </span>
+          <h3>General Enquiries</h3>
+        </div>
+      </a>
+
+      <!-- Phone Support -->
+      <a class="quick-link-card fade-in" href="tel:35623987503" aria-label="Phone Support">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.89.32 1.76.59 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.17a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.6.59A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </span>
+          <h3>Phone Support</h3>
+        </div>
+      </a>
+
+      <!-- Library Website -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/mcast-library/" aria-label="Library Website">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </span>
+          <h3>Library Website</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Main contact information -->
+  <section class="section-wrap">
+    <h2 class="section">General Contact Information</h2>
+    
+    <div class="content-section">
+      <div class="contact-cards">
+        <div class="contact-card">
+          <h3>📍 Address</h3>
+          <p>Malta College of Arts, Science and Technology<br>
+          Library and Learning Resource Centre<br>
+          Corradino Hill<br>
+          Paola PLA 9032 Malta</p>
+        </div>
+        
+        <div class="contact-card">
+          <h3>📞 Phone</h3>
+          <p><strong>356 23987503/1/0</strong></p>
+          <p>For general enquiries and assistance</p>
+        </div>
+        
+        <div class="contact-card">
+          <h3>📧 Email</h3>
+          <p><a href="mailto:llrc@mcast.edu.mt" class="content-link email">llrc@mcast.edu.mt</a></p>
+          <p>Primary email for all library enquiries</p>
+        </div>
+        
+        <div class="contact-card">
+          <h3>🌐 Website</h3>
+          <p><a href="https://mcast.edu.mt/mcast-library/" class="content-link">Library Website</a></p>
+          <p>Access our online resources and services</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Library staff section -->
+  <section class="section-wrap">
+    <h2 class="section">Library Staff</h2>
+    
+    <div class="content-section">
+      <p>Our dedicated library team is here to assist you with your research, borrowing, and information needs. Feel free to contact the appropriate staff member for specialized assistance.</p>
+      
+      <div class="staff-grid">
+        <!-- Director -->
+        <div class="staff-card">
+          <div class="staff-name">Ms. Liza Franco</div>
+          <span class="staff-role">Director</span>
+          <p><a href="mailto:liza.franco@mcast.edu.mt" class="content-link email">liza.franco@mcast.edu.mt</a></p>
+        </div>
+        
+        <!-- Senior Assistant Librarians -->
+        <div class="staff-card">
+          <div class="staff-name">Mr. Carmel Borg</div>
+          <span class="staff-role">Senior Assistant Librarian</span>
+          <p><a href="mailto:carmel.borg@mcast.edu.mt" class="content-link email">carmel.borg@mcast.edu.mt</a></p>
+        </div>
+        
+        <div class="staff-card">
+          <div class="staff-name">Ms. Liliana Grech</div>
+          <span class="staff-role">Senior Assistant Librarian</span>
+          <p><a href="mailto:liliana.grech@mcast.edu.mt" class="content-link email">liliana.grech@mcast.edu.mt</a></p>
+        </div>
+        
+        <div class="staff-card">
+          <div class="staff-name">Mr. Victor Vella</div>
+          <span class="staff-role">Senior Assistant Librarian</span>
+          <p><a href="mailto:victor.vella@mcast.edu.mt" class="content-link email">victor.vella@mcast.edu.mt</a></p>
+        </div>
+        
+        <!-- Assistant Librarians -->
+        <div class="staff-card">
+          <div class="staff-name">Ms. Abigail Anne Agius</div>
+          <span class="staff-role">Assistant Librarian</span>
+          <p><a href="mailto:abigail.agius@mcast.edu.mt" class="content-link email">abigail.agius@mcast.edu.mt</a></p>
+        </div>
+        
+        <div class="staff-card">
+          <div class="staff-name">Ms. Beatriz Elena Zapata Gonzales</div>
+          <span class="staff-role">Assistant Librarian</span>
+          <p><a href="mailto:beatriz.ez.gonzalez@mcast.edu.mt" class="content-link email">beatriz.ez.gonzalez@mcast.edu.mt</a></p>
+        </div>
+        
+        <div class="staff-card">
+          <div class="staff-name">Ms. Laura Almario</div>
+          <span class="staff-role">Assistant Librarian</span>
+          <p><a href="mailto:laura.almario@mcast.edu.mt" class="content-link email">laura.almario@mcast.edu.mt</a></p>
+        </div>
+        
+        <div class="staff-card">
+          <div class="staff-name">Mr. Matthew Vella Muskat</div>
+          <span class="staff-role">Assistant Librarian</span>
+          <p><a href="mailto:matthew.vella.muskat@mcast.edu.mt" class="content-link email">matthew.vella.muskat@mcast.edu.mt</a></p>
+        </div>
+        
+        <!-- Clerk -->
+        <div class="staff-card">
+          <div class="staff-name">Mr. Alexander Micallef</div>
+          <span class="staff-role">Clerk</span>
+          <p><a href="mailto:alexander.micallef@mcast.edu.mt" class="content-link email">alexander.micallef@mcast.edu.mt</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Additional contact methods -->
+  <section class="section-wrap">
+    <h2 class="section">Other Ways to Reach Us</h2>
+    
+    <div class="content-section">
+      <div class="info-box">
+        <h4>📋 Visit Us in Person</h4>
+        <p>You're always welcome to visit the library during our opening hours. Our staff at the circulation desk can assist you with immediate queries, book borrowing, and general assistance.</p>
+      </div>
+      
+      <div class="info-box">
+        <h4>💬 Social Media</h4>
+        <p>Stay connected with us through our social media channels for updates, events, and quick responses to your questions.</p>
+      </div>
+      
+      <div class="info-box">
+        <h4>📚 Subject Specialists</h4>
+        <p>For specialized research assistance in specific subject areas, please contact the relevant senior assistant librarian who specializes in your field of study.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related resources section -->
+  <section class="section-wrap">
+    <h2 class="section">Related Resources</h2>
+    
+    <div class="quick-links-grid">
+      <!-- Opening Hours -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/library-opening-hours/" aria-label="Opening Hours">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </span>
+          <h3>Opening Hours</h3>
+        </div>
+      </a>
+
+      <!-- Library Services -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/library-services/" aria-label="Library Services">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </span>
+          <h3>Library Services</h3>
+        </div>
+      </a>
+
+      <!-- New Users Guide -->
+      <a class="quick-link-card fade-in" href="newUsers.html" aria-label="New Users Guide">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <h3>New Users Guide</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Help section -->
+  <section class="section-wrap">
+    <h2 class="section">Need Immediate Assistance?</h2>
+    
+    <div class="info-box">
+      <h4>We're here to help you!</h4>
+      <ul>
+        <li><strong>Phone:</strong> Call us at 356 23987503/1/0 during opening hours</li>
+        <li><strong>Email:</strong> Send your queries to <a href="mailto:llrc@mcast.edu.mt" class="content-link email">llrc@mcast.edu.mt</a></li>
+        <li><strong>In Person:</strong> Visit the circulation desk for immediate assistance</li>
+        <li><strong>Online:</strong> Access our digital resources 24/7 through the <a href="https://mcast.edu.mt/mcast-library/" class="content-link">library website</a></li>
+      </ul>
+    </div>
+    
+    <p><em>Last updated: 19th June 2025</em></p>
+  </section>
+
+  <!-- Back to library button -->
+  <a href="index.html" class="back-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    Back to MCAST Library
+  </a>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <section>
+      <h4>Learn with us</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/how-to-apply-online-2/">Apply now</a></li>
+        <li><a href="https://mcast.edu.mt/full-time-programmes/">Institutes</a></li>
+        <li><a href="https://mcast.edu.mt/int-students/">International students</a></li>
+        <li><a href="https://mcast.edu.mt/prospectus-2024-2025/">Prospectus</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>About MCAST</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/about-mcast/">Mission</a></li>
+        <li><a href="https://mcast.edu.mt/wp-content/uploads/MCAST_ACT_JULY_2023.pdf">MCAST Act</a></li>
+        <li><a href="https://mcast.edu.mt/board-of-governors/">Board of Governors</a></li>
+        <li><a href="https://mcast.edu.mt/contact-us/">Contact us</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Know more</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/category/mcast_news/">News</a></li>
+        <li><a href="https://mcast.edu.mt/mcast-events/">Events</a></li>
+        <li><a href="https://mcast.edu.mt/data-protection-documents/">Privacy</a></li>
+        <li><a href="https://mcast.edu.mt/foi/">FOI</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="https://www.facebook.com/MCASTmt/">Facebook</a></li>
+        <li><a href="https://www.instagram.com/mcastmt/">Instagram</a></li>
+        <li><a href="https://twitter.com/mcastmt">Twitter</a></li>
+        <li><a href="https://www.linkedin.com/school/malta-college-of-arts-science-&amp;-technology-mcast-/">LinkedIn</a></li>
+      </ul>
+    </section>
+  </div>
+  <div class="container footer-bottom">
+    <span>&copy; Copyright MCAST 2025</span>
+    <span>Paola PLA 9032 Malta</span>
+  </div>
+</footer>
+
+<script>
+// Simple script for mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+  const navToggle = document.getElementById('nav-toggle');
+  const menu = document.querySelector('.menu');
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', function(event) {
+    const isClickInsideMenu = menu.contains(event.target);
+    const isClickOnToggle = event.target.closest('.burger');
+    
+    if (!isClickInsideMenu && !isClickOnToggle && navToggle.checked) {
+      navToggle.checked = false;
+    }
+  });
+  
+  // Add animation delay to cards for staggered effect
+  const cards = document.querySelectorAll('.fade-in');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+  });
+});
+</script>
+</body>
+</html>

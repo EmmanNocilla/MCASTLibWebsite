@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Suggest a Purchase - MCAST Library</title>
+<meta name="description" content="Suggest new books, journals, and resources for the MCAST Library collection." />
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --brand:#000043;
+  --brand-2:#0b0b6a;
+  --brand-light: #1a1a8a;
+  --accent: #ff7b25;
+  --accent-light: #ff9d5c;
+  --accent-dark: #e06a1a;
+  --bg:#ffffff;
+  --text:#17202a;
+  --muted:#93a3b8;
+  --card:#0b0b6a;
+  --radius:18px;
+  --shadow:0 10px 28px rgba(2,6,23,.10);
+  --shadow-lg:0 24px 60px rgba(2,6,23,.18);
+  --ring:0 0 0 .2rem rgba(255, 123, 37, 0.3);
+  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*{ box-sizing:border-box; }
+:focus{ outline:2px solid transparent; box-shadow:var(--ring); }
+html,body{ height:100%; }
+body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
+.container{ width:min(1200px, 92vw); margin-inline:auto; }
+.hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); }
+
+@media (prefers-reduced-motion:no-preference){
+  .rise-in{ animation:rise .5s ease both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+  .fade-in{ animation:fadeIn .7s ease both; }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+}
+
+/* Header */
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(180%) blur(8px);
+  background:color-mix(in srgb, var(--brand) 94%, transparent);
+  color:#fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 0; }
+.brand{ display:flex; align-items:center; gap:.75rem; text-decoration:none; color:#fff; font-weight:700; transition: var(--transition); }
+.brand:hover { transform: translateY(-2px); }
+.brand img{ height:40px; width:auto; transition: var(--transition); }
+.brand:hover img { transform: scale(1.05); }
+.brand span{ letter-spacing:.4px; font-family:Montserrat, Inter, sans-serif; }
+.menu{ display:flex; gap:1.25rem; align-items:center; }
+.menu a{ color:#ffffff; text-decoration:none; font-weight:600; font-family:Montserrat, Inter, sans-serif; font-size:.95rem; opacity:.92; transition: var(--transition); position: relative; padding: 0.5rem 0; }
+.menu a:hover{ opacity:1; transform: translateY(-2px); }
+.menu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+.menu a:hover::after {
+  width: 100%;
+}
+.menu a[style*="background"] { 
+  background: white !important;
+  color: black !important;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.menu a[style*="background"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.7s ease;
+}
+.menu a[style*="background"]:hover::before {
+  left: 100%;
+}
+#nav-toggle{ appearance:none; position:absolute; left:-9999px; }
+.burger{ display:none; gap:.5rem; align-items:center; color:#fff; padding:.5rem .75rem; border:1px solid rgba(255,255,255,.25); border-radius:10px; cursor:pointer; transition: var(--transition); }
+.burger:hover { background: rgba(255,255,255,0.1); }
+.burger svg{ width:20px; height:20px; }
+@media (max-width:900px){
+  .menu{ position:fixed; inset:64px 0 auto 0; background:var(--brand); flex-direction:column; padding:1rem; transform:translateY(-120%); transition:transform .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  #nav-toggle:checked ~ .menu{ transform:translateY(0); }
+  .burger{ display:flex; }
+}
+
+/* Hero with background image + darker overlay for contrast */
+.hero{
+  position:relative; color:#fff;
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+  background-image: linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("images/library.jpg");
+  background-size: cover; background-position:center; background-repeat:no-repeat;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(11, 11, 106, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 123, 37, 0.2) 0%, transparent 40%);
+  z-index: 0;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero h1{ font:700 clamp(1.75rem, 2vw + 1rem, 2.4rem)/1.15 Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; letter-spacing:.2px; }
+.hero .kicker{ display:inline-block; font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; opacity:.9; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; margin-bottom: 1rem; }
+
+/* Main content sections */
+.section-wrap{ padding: clamp(1.75rem, 3vw, 2.75rem) 0; }
+h2.section{ font:700 1.25rem Montserrat, Inter, sans-serif; letter-spacing:.2px; margin:0 0 1rem; color:var(--text); position: relative; display: inline-block; }
+h2.section::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Content styling */
+.content-section {
+  background: #f8fafc;
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+}
+.content-link {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  padding: 0.1rem 0;
+}
+.content-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.content-link.email {
+  color: var(--accent);
+}
+.content-link.email:hover {
+  color: var(--accent-dark);
+}
+
+/* Process steps */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.process-step {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent);
+  transition: var(--transition);
+}
+.process-step:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* Quick links grid */
+.quick-links-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:1.5rem; }
+@media (max-width:1050px){ .quick-links-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width:680px){ .quick-links-grid{ grid-template-columns:1fr; } }
+
+/* Quick link cards */
+.quick-link-card{
+  display:block; text-decoration:none; color:#fff;
+  background: radial-gradient(100% 140% at 100% 0%, var(--card) 0%, var(--brand) 70%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition: var(--transition);
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+.quick-link-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,123,37,0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.quick-link-card:hover::before {
+  opacity: 1;
+}
+.quick-link-card:focus-visible{ box-shadow:var(--ring), var(--shadow-lg); }
+.quick-link-card:hover{ transform: translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(255,255,255,.18); background: radial-gradient(100% 140% at 100% 0%, var(--brand-light) 0%, var(--brand) 70%); }
+
+/* icon bar */
+.quick-link-card .thumb{
+  display:flex; align-items:center; gap:.9rem;
+  padding:1.1rem 1.1rem .6rem;
+  position: relative;
+  z-index: 1;
+}
+.icon{
+  width:54px; height:54px; flex:0 0 54px;
+  border-radius:14px; display:grid; place-items:center;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  transition: var(--transition);
+}
+.quick-link-card:hover .icon {
+  transform: scale(1.1);
+  background: rgba(255,123,37,0.2);
+  border-color: rgba(255,123,37,0.4);
+}
+.icon svg{ width:28px; height:28px; color:#fff; transition: var(--transition); }
+.quick-link-card:hover .icon svg {
+  transform: scale(1.1);
+  color: var(--accent-light);
+}
+
+/* text */
+.quick-link-card h3{ margin:.2rem 1.1rem 0; font:700 1.05rem Montserrat, Inter, sans-serif; color:#fff; letter-spacing:.2px; position: relative; z-index: 1; transition: var(--transition); }
+.quick-link-card:hover h3 {
+  transform: translateX(5px);
+  color: var(--accent-light);
+}
+
+/* Info boxes */
+.info-box {
+  background: #f1f5f9;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.info-box h4 {
+  margin-top: 0;
+  color: var(--brand);
+  font-family: Montserrat, Inter, sans-serif;
+}
+
+/* Footer */
+footer{ background:#0b0b3a; color:#cbd5e1; margin-top:2rem; padding: clamp(2rem, 4vw, 3rem) 0; position: relative; overflow: hidden; }
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(11, 11, 106, 0.4) 0%, transparent 50%);
+  z-index: 0;
+}
+footer .container {
+  position: relative;
+  z-index: 1;
+}
+footer a{ color:#fff; text-decoration:none; transition: var(--transition); display: inline-block; }
+footer a:hover{ color: var(--accent-light); text-decoration:underline; transform: translateX(3px); }
+.footer-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:1.5rem; }
+.footer-grid h4{ color:#fff; font:700 1rem Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; position: relative; display: inline-block; }
+.footer-grid h4::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.footer-grid li{ list-style:none; margin:.45rem 0; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.12); margin-top:1.5rem; padding-top:.75rem; font-size:.9rem; display:flex; gap:.75rem; justify-content:space-between; flex-wrap:wrap; }
+@media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .footer-grid{ grid-template-columns:1fr; } }
+
+/* Back button */
+.back-button{ display:inline-flex; align-items:center; gap:.5rem; background:var(--brand); color:#fff; padding:.75rem 1.5rem; border-radius:999px; text-decoration:none; font-weight:600; transition:var(--transition); margin-top:2rem; }
+.back-button:hover{ background:var(--brand-light); transform:translateY(-2px); }
+.back-button svg{ width:16px; height:16px; }
+
+/* Form styling */
+.form-note {
+  background: #e8f4fd;
+  border: 1px solid #b6daf2;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+.form-note strong {
+  color: var(--brand);
+}
+</style>
+</head>
+
+<body>
+<a href="#main" class="hidden">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <img alt="MCAST" src="https://mcast.edu.mt/wp-content/uploads/New_Logo4-1.png" />
+      <span>MCAST Library</span>
+    </a>
+
+    <label for="nav-toggle" class="burger" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Menu
+    </label>
+    <input id="nav-toggle" type="checkbox" aria-hidden="true">
+
+    <nav class="menu" aria-label="Primary">
+      <a href="index.html#search">Search</a>
+      <a href="index.html#tiles">Help & Services</a>
+      <a href="index.html#hours">Opening Hours</a>
+      <a href="https://mcast.primo.exlibrisgroup.com/discovery/search?vid=356MCAST_INST:MCAST" style="background:#ffffff; color:var(--brand); padding:.45rem .75rem; border-radius:999px; font-weight:800;">Library Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO: suggest a purchase intro -->
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Library Resources</span>
+    <h1>Suggest a Purchase</h1>
+    <p>Help us improve our collection by suggesting new books, journals, and resources.</p>
+  </div>
+</section>
+
+<main id="main" class="container">
+  <!-- Quick links section -->
+  <section class="section-wrap">
+    <h2 class="section">Get Started Quickly</h2>
+    <div class="quick-links-grid">
+      <!-- Book Suggestion Form -->
+      <a class="quick-link-card fade-in" href="https://docs.google.com/forms/d/e/1FAIpQLSff2YL_OBKwC7aXsJ8VBp-k-2WPxTJCNAwU-2JpLtuUE-FGCg/viewform?pli=1" aria-label="Book Suggestion Form">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"></path>
+            </svg>
+          </span>
+          <h3>Book Suggestion Form</h3>
+        </div>
+      </a>
+
+      <!-- Download Form -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/wp-content/uploads/Lecturers-book-request-form.xlsx" aria-label="Download Form">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </span>
+          <h3>Download Form</h3>
+        </div>
+      </a>
+
+      <!-- Library Catalogue -->
+      <a class="quick-link-card fade-in" href="https://mcast.primo.exlibrisgroup.com/discovery/search?vid=356MCAST_INST:MCAST" aria-label="Library Catalogue">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <h3>Library Catalogue</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Main content section -->
+  <section class="section-wrap">
+    <h2 class="section">Suggest New Resources</h2>
+    
+    <div class="content-section">
+      <p>Is there a particular book, journal, database, etc. we don't have that would make a useful addition to the library? Do you think we need more copies of an important textbook?</p>
+      
+      <p>The MCAST library aims to make books and other resources available to support your learning and research. If the library does not have the material you require, you can suggest that we purchase it.</p>
+      
+      <div class="info-box">
+        <h4>Request Status Tracking</h4>
+        <p>You can follow the status of your request by logging into your online <a href="https://mcast.edu.mt/mcast-library/" class="content-link">My Library Account</a> and clicking on the <strong>Purchase requests</strong> button.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h3>Making a Suggestion</h3>
+      <p>Suggestions can be made by both MCAST staff and students.</p>
+      <p>Before submitting a suggestion, please use the <a href="https://mcast.edu.mt/mcast-library/" class="content-link">online library catalogue</a> to make sure that the library does not already have the item. For guidelines on how to do the search, please see <a href="searchTips.html" class="content-link">Search Tips</a>.</p>
+    </div>
+
+    <!-- Process steps -->
+    <div class="content-section">
+      <h3>How to Suggest a Purchase</h3>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h4>Check the Catalogue</h4>
+          <p>Search our online catalogue to ensure we don't already have the item you're requesting.</p>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h4>Choose Your Method</h4>
+          <p>Use the online form for books, or email us for other types of materials.</p>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h4>Submit Your Suggestion</h4>
+          <p>Fill out the appropriate form with all necessary details about the resource.</p>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <h4>Track Your Request</h4>
+          <p>Monitor the status of your suggestion through your My Library Account.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggestion methods -->
+    <div class="content-section">
+      <h3>Suggestion Methods</h3>
+      
+      <div class="form-note">
+        <strong>For a suggestion for the purchase of:</strong>
+      </div>
+      
+      <h4>📚 Books</h4>
+      <p>You can either:</p>
+      <ul>
+        <li>Use our online <a href="https://bit.ly/3M7Wu1q" class="content-link">book suggestion form</a></li>
+        <li>Download the form from <a href="https://mcast.edu.mt/wp-content/uploads/Lecturers-book-request-form.xlsx" class="content-link">here</a></li>
+      </ul>
+      <p><em>Note: Use a separate form for each item suggested when using the online form.</em></p>
+      
+      <h4>📄 Other Materials</h4>
+      <p>For journals, databases, or other types of resources:</p>
+      <ul>
+        <li>Send an email to <a href="mailto:llrc@mcast.edu.mt" class="content-link email">llrc@mcast.edu.mt</a></li>
+      </ul>
+    </div>
+
+    <!-- Additional info -->
+    <div class="content-section">
+      <h3>What Happens Next?</h3>
+      <p>We will consider all suggestions, bearing in mind their suitability as well as any budget constraints that may be in place. Each suggestion is evaluated based on:</p>
+      <ul>
+        <li>Relevance to MCAST curriculum and research</li>
+        <li>Current collection gaps</li>
+        <li>Available budget</li>
+        <li>Demand and potential usage</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Additional resources section -->
+  <section class="section-wrap">
+    <h2 class="section">Related Resources</h2>
+    
+    <div class="quick-links-grid">
+      <!-- Search Tips -->
+      <a class="quick-link-card fade-in" href="searchTips.html" aria-label="Search Tips">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <h3>Search Tips</h3>
+        </div>
+      </a>
+
+      <!-- Library Services -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/library-services/" aria-label="Library Services">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </span>
+          <h3>Library Services</h3>
+        </div>
+      </a>
+
+      <!-- Contact Points -->
+      <a class="quick-link-card fade-in" href="https://mcast.edu.mt/library-contact-points/" aria-label="Contact Points">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </span>
+          <h3>Contact Points</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Help section -->
+  <section class="section-wrap">
+    <h2 class="section">Need Help?</h2>
+    
+    <div class="info-box">
+      <h4>We're here to help you!</h4>
+      <ul>
+        <li>Ask at the circulation/help desk</li>
+        <li>Email us at <a href="mailto:LLRC@mcast.edu.mt" class="content-link email">LLRC@mcast.edu.mt</a></li>
+        <li>Phone us on 23987500/1/2/3. For off-site libraries' telephone numbers see <a href="https://mcast.edu.mt/library-opening-hours/" class="content-link">here</a></li>
+        <li>Chat with us on <a href="https://www.facebook.com/MCAST.Libraries/" class="content-link">MCAST Libraries</a> Facebook page</li>
+      </ul>
+    </div>
+    
+    <p><em>Last updated: 25th January 2023</em></p>
+  </section>
+
+  <!-- Back to library button -->
+  <a href="index.html" class="back-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    Back to MCAST Library
+  </a>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <section>
+      <h4>Learn with us</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/how-to-apply-online-2/">Apply now</a></li>
+        <li><a href="https://mcast.edu.mt/full-time-programmes/">Institutes</a></li>
+        <li><a href="https://mcast.edu.mt/int-students/">International students</a></li>
+        <li><a href="https://mcast.edu.mt/prospectus-2024-2025/">Prospectus</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>About MCAST</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/about-mcast/">Mission</a></li>
+        <li><a href="https://mcast.edu.mt/wp-content/uploads/MCAST_ACT_JULY_2023.pdf">MCAST Act</a></li>
+        <li><a href="https://mcast.edu.mt/board-of-governors/">Board of Governors</a></li>
+        <li><a href="https://mcast.edu.mt/contact-us/">Contact us</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Know more</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/category/mcast_news/">News</a></li>
+        <li><a href="https://mcast.edu.mt/mcast-events/">Events</a></li>
+        <li><a href="https://mcast.edu.mt/data-protection-documents/">Privacy</a></li>
+        <li><a href="https://mcast.edu.mt/foi/">FOI</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Visit</h4>
+      <p>MCAST Main Campus, Paola PLA9032, Malta</p>
+      <p><a href="mailto:information@mcast.edu.mt">information@mcast.edu.mt</a> · +356 2398 7100</p>
+    </section>
+  </div>
+  <div class="container footer-bottom">
+    <span>© MCAST Library</span>
+    <span>Accessibility · Cookies · Feedback</span>
+  </div>
+</footer>
+
+<script>
+// Add scroll animation for cards
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.quick-link-card');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}ms`;
+        entry.target.classList.add('fade-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  cards.forEach((card, index) => {
+    card.dataset.delay = index * 100;
+    observer.observe(card);
+  });
+});
+</script>
+</body>
+</html>

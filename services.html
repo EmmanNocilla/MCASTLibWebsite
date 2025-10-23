@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Library Services - MCAST Library</title>
+<meta name="description" content="MCAST Library Services - circulation, online resources, printing, scanning, and support services for students and staff." />
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --brand:#000043;
+  --brand-2:#0b0b6a;
+  --brand-light: #1a1a8a;
+  --accent: #ff7b25;
+  --accent-light: #ff9d5c;
+  --accent-dark: #e06a1a;
+  --bg:#ffffff;
+  --text:#17202a;
+  --muted:#93a3b8;
+  --card:#0b0b6a;
+  --radius:18px;
+  --shadow:0 10px 28px rgba(2,6,23,.10);
+  --shadow-lg:0 24px 60px rgba(2,6,23,.18);
+  --ring:0 0 0 .2rem rgba(255, 123, 37, 0.3);
+  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*{ box-sizing:border-box; }
+:focus{ outline:2px solid transparent; box-shadow:var(--ring); }
+html,body{ height:100%; }
+body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
+.container{ width:min(1200px, 92vw); margin-inline:auto; }
+.hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); }
+
+@media (prefers-reduced-motion:no-preference){
+  .rise-in{ animation:rise .5s ease both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+  .fade-in{ animation:fadeIn .7s ease both; }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+}
+
+/* Header */
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(180%) blur(8px);
+  background:color-mix(in srgb, var(--brand) 94%, transparent);
+  color:#fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 0; }
+.brand{ display:flex; align-items:center; gap:.75rem; text-decoration:none; color:#fff; font-weight:700; transition: var(--transition); }
+.brand:hover { transform: translateY(-2px); }
+.brand img{ height:40px; width:auto; transition: var(--transition); }
+.brand:hover img { transform: scale(1.05); }
+.brand span{ letter-spacing:.4px; font-family:Montserrat, Inter, sans-serif; }
+.menu{ display:flex; gap:1.25rem; align-items:center; }
+.menu a{ color:#ffffff; text-decoration:none; font-weight:600; font-family:Montserrat, Inter, sans-serif; font-size:.95rem; opacity:.92; transition: var(--transition); position: relative; padding: 0.5rem 0; }
+.menu a:hover{ opacity:1; transform: translateY(-2px); }
+.menu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+.menu a:hover::after {
+  width: 100%;
+}
+.menu a[style*="background"] { 
+  background: white !important;
+  color: black !important;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.menu a[style*="background"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.7s ease;
+}
+.menu a[style*="background"]:hover::before {
+  left: 100%;
+}
+#nav-toggle{ appearance:none; position:absolute; left:-9999px; }
+.burger{ display:none; gap:.5rem; align-items:center; color:#fff; padding:.5rem .75rem; border:1px solid rgba(255,255,255,.25); border-radius:10px; cursor:pointer; transition: var(--transition); }
+.burger:hover { background: rgba(255,255,255,0.1); }
+.burger svg{ width:20px; height:20px; }
+@media (max-width:900px){
+  .menu{ position:fixed; inset:64px 0 auto 0; background:var(--brand); flex-direction:column; padding:1rem; transform:translateY(-120%); transition:transform .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  #nav-toggle:checked ~ .menu{ transform:translateY(0); }
+  .burger{ display:flex; }
+}
+
+/* Hero with background image + darker overlay for contrast */
+.hero{
+  position:relative; color:#fff;
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+  background-image: linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("images/library.jpg");
+  background-size: cover; background-position:center; background-repeat:no-repeat;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(11, 11, 106, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 123, 37, 0.2) 0%, transparent 40%);
+  z-index: 0;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero h1{ font:700 clamp(1.75rem, 2vw + 1rem, 2.4rem)/1.15 Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; letter-spacing:.2px; }
+.hero .kicker{ display:inline-block; font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; opacity:.9; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; margin-bottom: 1rem; }
+
+/* Main content sections */
+.section-wrap{ padding: clamp(1.75rem, 3vw, 2.75rem) 0; }
+h2.section{ font:700 1.25rem Montserrat, Inter, sans-serif; letter-spacing:.2px; margin:0 0 1rem; color:var(--text); position: relative; display: inline-block; }
+h2.section::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Service cards grid */
+.services-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:1.5rem; }
+@media (max-width:1050px){ .services-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width:680px){ .services-grid{ grid-template-columns:1fr; } }
+
+/* Service cards */
+.service-card{
+  display:block; text-decoration:none; color:#fff;
+  background: radial-gradient(100% 140% at 100% 0%, var(--card) 0%, var(--brand) 70%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition: var(--transition);
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,123,37,0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.service-card:hover::before {
+  opacity: 1;
+}
+.service-card:focus-visible{ box-shadow:var(--ring), var(--shadow-lg); }
+.service-card:hover{ transform: translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(255,255,255,.18); background: radial-gradient(100% 140% at 100% 0%, var(--brand-light) 0%, var(--brand) 70%); }
+
+/* icon bar */
+.service-card .thumb{
+  display:flex; align-items:center; gap:.9rem;
+  padding:1.1rem 1.1rem .6rem;
+  position: relative;
+  z-index: 1;
+}
+.icon{
+  width:54px; height:54px; flex:0 0 54px;
+  border-radius:14px; display:grid; place-items:center;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  transition: var(--transition);
+}
+.service-card:hover .icon {
+  transform: scale(1.1);
+  background: rgba(255,123,37,0.2);
+  border-color: rgba(255,123,37,0.4);
+}
+.icon svg{ width:28px; height:28px; color:#fff; transition: var(--transition); }
+.service-card:hover .icon svg {
+  transform: scale(1.1);
+  color: var(--accent-light);
+}
+
+/* text */
+.service-card h3{ margin:.2rem 1.1rem 0; font:700 1.05rem Montserrat, Inter, sans-serif; color:#fff; letter-spacing:.2px; position: relative; z-index: 1; transition: var(--transition); }
+.service-card:hover h3 {
+  transform: translateX(5px);
+  color: var(--accent-light);
+}
+
+/* Tables */
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.service-table th {
+  background: var(--brand);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-family: Montserrat, Inter, sans-serif;
+  font-weight: 600;
+}
+.service-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.service-table tr:nth-child(even) {
+  background: #f8fafc;
+}
+.service-table tr:hover {
+  background: #f1f5f9;
+}
+
+/* Info boxes */
+.info-box {
+  background: #f1f5f9;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.info-box h4 {
+  margin-top: 0;
+  color: var(--brand);
+  font-family: Montserrat, Inter, sans-serif;
+}
+
+/* Content styling */
+.content-link {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  padding: 0.1rem 0;
+}
+.content-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.content-link.email {
+  color: var(--accent);
+}
+.content-link.email:hover {
+  color: var(--accent-dark);
+}
+
+/* Two column layout */
+.two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width: 900px){ .two-col{ grid-template-columns:1fr; } }
+
+/* Footer */
+footer{ background:#0b0b3a; color:#cbd5e1; margin-top:2rem; padding: clamp(2rem, 4vw, 3rem) 0; position: relative; overflow: hidden; }
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(11, 11, 106, 0.4) 0%, transparent 50%);
+  z-index: 0;
+}
+footer .container {
+  position: relative;
+  z-index: 1;
+}
+footer a{ color:#fff; text-decoration:none; transition: var(--transition); display: inline-block; }
+footer a:hover{ color: var(--accent-light); text-decoration:underline; transform: translateX(3px); }
+.footer-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:1.5rem; }
+.footer-grid h4{ color:#fff; font:700 1rem Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; position: relative; display: inline-block; }
+.footer-grid h4::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.footer-grid li{ list-style:none; margin:.45rem 0; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.12); margin-top:1.5rem; padding-top:.75rem; font-size:.9rem; display:flex; gap:.75rem; justify-content:space-between; flex-wrap:wrap; }
+@media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .footer-grid{ grid-template-columns:1fr; } }
+
+/* Back button */
+.back-button{ display:inline-flex; align-items:center; gap:.5rem; background:var(--brand); color:#fff; padding:.75rem 1.5rem; border-radius:999px; text-decoration:none; font-weight:600; transition:var(--transition); margin-top:2rem; }
+.back-button:hover{ background:var(--brand-light); transform:translateY(-2px); }
+.back-button svg{ width:16px; height:16px; }
+</style>
+</head>
+
+<body>
+<a href="#main" class="hidden">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <img alt="MCAST" src="https://mcast.edu.mt/wp-content/uploads/New_Logo4-1.png" />
+      <span>MCAST Library</span>
+    </a>
+
+    <label for="nav-toggle" class="burger" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Menu
+    </label>
+    <input id="nav-toggle" type="checkbox" aria-hidden="true">
+
+    <nav class="menu" aria-label="Primary">
+      <a href="index.html#search">Search</a>
+      <a href="index.html#tiles">Help & Services</a>
+      <a href="index.html#hours">Opening Hours</a>
+      <a href="https://mcast.primo.exlibrisgroup.com/discovery/search?vid=356MCAST_INST:MCAST" style="background:#ffffff; color:var(--brand); padding:.45rem .75rem; border-radius:999px; font-weight:800;">Library Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO: library services intro -->
+<section class="hero">
+  <div class="container">
+    <span class="kicker">MCAST Library Services</span>
+    <h1>Comprehensive Library Services & Support</h1>
+    <p>Access our full range of services including circulation, online resources, printing, and specialized support.</p>
+  </div>
+</section>
+
+<main id="main" class="container">
+  <!-- Quick services overview -->
+  <section class="section-wrap">
+    <h2 class="section">Our Services</h2>
+    <div class="services-grid">
+      <!-- Circulation -->
+      <a class="service-card fade-in" href="#circulation" aria-label="Circulation Services">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"></path>
+            </svg>
+          </span>
+          <h3>Circulation</h3>
+        </div>
+      </a>
+
+      <!-- Online Resources -->
+      <a class="service-card fade-in" href="#online-resources" aria-label="Online Resources">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </span>
+          <h3>Online Resources</h3>
+        </div>
+      </a>
+
+      <!-- Printing & Copying -->
+      <a class="service-card fade-in" href="#printing" aria-label="Printing & Copying">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+          </span>
+          <h3>Printing & Copying</h3>
+        </div>
+      </a>
+
+      <!-- Library Instruction -->
+      <a class="service-card fade-in" href="#instruction" aria-label="Library Instruction">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </span>
+          <h3>Library Instruction</h3>
+        </div>
+      </a>
+
+      <!-- Computing -->
+      <a class="service-card fade-in" href="#computing" aria-label="Computing Facilities">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </span>
+          <h3>Computing Facilities</h3>
+        </div>
+      </a>
+
+      <!-- Special Support -->
+      <a class="service-card fade-in" href="#support" aria-label="Special Support">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+          </span>
+          <h3>Special Support</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Circulation Section -->
+  <section id="circulation" class="section-wrap">
+    <h2 class="section">Circulation Services</h2>
+    
+    <div class="info-box">
+      <h4>Borrowing Made Easy</h4>
+      <p>Our circulation services handle user registration, borrowing, returns, renewals, and queries. Get started by registering with the library to access all our resources.</p>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>Borrowing Entitlements</h3>
+        <table class="service-table">
+          <thead>
+            <tr>
+              <th>User Type</th>
+              <th>Items Allowed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Levels 1-3 Students</td>
+              <td>4 items</td>
+            </tr>
+            <tr>
+              <td>Levels 4-8 Students</td>
+              <td>5 items</td>
+            </tr>
+            <tr>
+              <td>Academic/Administrative Staff</td>
+              <td>6 items</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <h3>Loan Periods</h3>
+        <table class="service-table">
+          <thead>
+            <tr>
+              <th>Item Type</th>
+              <th>Loan Period</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Books</td>
+              <td>3 Weeks</td>
+            </tr>
+            <tr>
+              <td>A-V Material (Subject)</td>
+              <td>1 Week</td>
+            </tr>
+            <tr>
+              <td>A-V Material (Films - staff only)</td>
+              <td>3 Days</td>
+            </tr>
+            <tr>
+              <td>Periodicals</td>
+              <td>1 Week</td>
+            </tr>
+            <tr>
+              <td>Games & Toys</td>
+              <td>1 Week</td>
+            </tr>
+            <tr>
+              <td>Dissertations</td>
+              <td>On-premises only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h4>Renewals & Returns</h4>
+      <p>Items can be renewed twice online through <a href="https://mcast.edu.mt/mcast-library/" class="content-link">My Library Account</a>, or in person at any circulation desk. Returns can be made to any MCAST library location.</p>
+    </div>
+  </section>
+
+  <!-- Online Resources Section -->
+  <section id="online-resources" class="section-wrap">
+    <h2 class="section">Online Resources</h2>
+    
+    <div class="info-box">
+      <h4>Digital Access Anywhere</h4>
+      <p>Access our comprehensive collection of e-journals, e-books, and databases from anywhere with your MCAST credentials.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"></path>
+            </svg>
+          </span>
+          <h3>EBSCO Academic Search</h3>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"></path>
+            </svg>
+          </span>
+          <h3>EBSCO eBook Collection</h3>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="thumb">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"></path>
+            </svg>
+          </span>
+          <h3>Emerald Journals</h3>
+        </div>
+      </div>
+    </div>
+
+    <p>Visit our <a href="https://mcast.edu.mt/electronic-library-resources/" class="content-link">Electronic Library Resources</a> page for complete access information.</p>
+  </section>
+
+  <!-- Printing & Copying Section -->
+  <section id="printing" class="section-wrap">
+    <h2 class="section">Printing, Copying & Scanning</h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Photocopying & Printing Costs</h3>
+        <table class="service-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>A4</th>
+              <th>A3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Black & White</td>
+              <td>€0.05</td>
+              <td>€0.10</td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td>€0.25</td>
+              <td>€0.50</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><small>Color printing available at Main Campus (Paola) and Institute for Creative Arts (Mosta) only.</small></p>
+      </div>
+
+      <div>
+        <h3>Card System</h3>
+        <p>Photocopying uses a card-operated system:</p>
+        <ul>
+          <li><strong>New Card:</strong> €3.00 (€2.50 deposit + €0.50 credit)</li>
+          <li><strong>Recharge:</strong> €2.50 minimum</li>
+          <li><strong>Deposit Refund:</strong> Available when card is returned</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h4>Scanning & Binding</h4>
+      <p><strong>Scanning:</strong> Free of charge, available through photocopier stations</p>
+      <p><strong>Binding:</strong> Plastic spiral binding available at Mosta campus (€1.00 up to 50 pages, €1.50 for more)</p>
+    </div>
+  </section>
+
+  <!-- Additional Services -->
+  <section class="section-wrap">
+    <h2 class="section">Additional Services</h2>
+
+    <div class="two-col">
+      <div>
+        <h3 id="instruction">Library Instruction & Tours</h3>
+        <p>We offer orientation sessions, library tours, and training on using our resources effectively. Sessions are available throughout the year for individuals and groups.</p>
+        <p><a href="mailto:llrc@mcast.edu.mt" class="content-link email">Email us to schedule a session</a></p>
+      </div>
+
+      <div>
+        <h3 id="computing">Computing Facilities</h3>
+        <p>All libraries provide computer access with internet connectivity for research, assignments, and email. Login details are provided by the IT department.</p>
+      </div>
+    </div>
+
+    <div id="support" class="info-box">
+      <h4>Support for Students with Difficulties</h4>
+      <p>We're committed to ensuring all students can access our services:</p>
+      <ul>
+        <li>Extended loan periods available</li>
+        <li>Fetching service for library materials</li>
+        <li>Individual library tours and training</li>
+        <li>Accessible study spaces</li>
+        <li>Read&Write assistive software</li>
+        <li>Wheelchair accessible facilities</li>
+      </ul>
+      <p>Contact us at <a href="mailto:llrc@mcast.edu.mt" class="content-link email">llrc@mcast.edu.mt</a> to discuss your specific needs.</p>
+    </div>
+  </section>
+
+  <!-- Contact & Support -->
+  <section class="section-wrap">
+    <h2 class="section">Get Help</h2>
+    
+    <div class="info-box">
+      <h4>We're Here to Assist You</h4>
+      <p>For any queries or assistance with our services:</p>
+      <ul>
+        <li>Visit the circulation/help desk at any library</li>
+        <li>Email: <a href="mailto:LLRC@mcast.edu.mt" class="content-link email">LLRC@mcast.edu.mt</a></li>
+        <li>Phone: 23987500/1/2/3</li>
+        <li>Follow updates on <a href="https://www.facebook.com/MCAST.Libraries/" class="content-link">Facebook</a></li>
+        <li>Watch tutorials on our <a href="https://www.youtube.com/channel/UCEkd96YLIL8PXc_XhUPWIZw" class="content-link">YouTube channel</a></li>
+      </ul>
+    </div>
+    
+    <p><em>Last updated: 29th October 2024</em></p>
+  </section>
+
+  <!-- Back to library button -->
+  <a href="index.html" class="back-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    Back to MCAST Library
+  </a>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <section>
+      <h4>Learn with us</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/how-to-apply-online-2/">Apply now</a></li>
+        <li><a href="https://mcast.edu.mt/full-time-programmes/">Institutes</a></li>
+        <li><a href="https://mcast.edu.mt/int-students/">International students</a></li>
+        <li><a href="https://mcast.edu.mt/prospectus-2024-2025/">Prospectus</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>About MCAST</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/about-mcast/">Mission</a></li>
+        <li><a href="https://mcast.edu.mt/wp-content/uploads/MCAST_ACT_JULY_2023.pdf">MCAST Act</a></li>
+        <li><a href="https://mcast.edu.mt/board-of-governors/">Board of Governors</a></li>
+        <li><a href="https://mcast.edu.mt/contact-us/">Contact us</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Know more</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/category/mcast_news/">News</a></li>
+        <li><a href="https://mcast.edu.mt/mcast-events/">Events</a></li>
+        <li><a href="https://mcast.edu.mt/data-protection-documents/">Privacy</a></li>
+        <li><a href="https://mcast.edu.mt/foi/">FOI</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Visit</h4>
+      <p>MCAST Main Campus, Paola PLA9032, Malta</p>
+      <p><a href="mailto:information@mcast.edu.mt">information@mcast.edu.mt</a> · +356 2398 7100</p>
+    </section>
+  </div>
+  <div class="container footer-bottom">
+    <span>© MCAST Library</span>
+    <span>Accessibility · Cookies · Feedback</span>
+  </div>
+</footer>
+
+<script>
+// Add scroll animation for cards
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.service-card');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}ms`;
+        entry.target.classList.add('fade-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  cards.forEach((card, index) => {
+    card.dataset.delay = index * 100;
+    observer.observe(card);
+  });
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

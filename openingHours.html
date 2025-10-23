@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Library Opening Hours - MCAST Library</title>
+<meta name="description" content="MCAST Library opening hours for all campuses - Paola, Mosta, Gozo, and Qormi. Find contact information and locations." />
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --brand:#000043;
+  --brand-2:#0b0b6a;
+  --brand-light: #1a1a8a;
+  --accent: #ff7b25;
+  --accent-light: #ff9d5c;
+  --accent-dark: #e06a1a;
+  --bg:#ffffff;
+  --text:#17202a;
+  --muted:#93a3b8;
+  --card:#0b0b6a;
+  --radius:18px;
+  --shadow:0 10px 28px rgba(2,6,23,.10);
+  --shadow-lg:0 24px 60px rgba(2,6,23,.18);
+  --ring:0 0 0 .2rem rgba(255, 123, 37, 0.3);
+  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*{ box-sizing:border-box; }
+:focus{ outline:2px solid transparent; box-shadow:var(--ring); }
+html,body{ height:100%; }
+body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
+.container{ width:min(1200px, 92vw); margin-inline:auto; }
+.hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); }
+
+@media (prefers-reduced-motion:no-preference){
+  .rise-in{ animation:rise .5s ease both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+  .fade-in{ animation:fadeIn .7s ease both; }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+}
+
+/* Header */
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(180%) blur(8px);
+  background:color-mix(in srgb, var(--brand) 94%, transparent);
+  color:#fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 0; }
+.brand{ display:flex; align-items:center; gap:.75rem; text-decoration:none; color:#fff; font-weight:700; transition: var(--transition); }
+.brand:hover { transform: translateY(-2px); }
+.brand img{ height:40px; width:auto; transition: var(--transition); }
+.brand:hover img { transform: scale(1.05); }
+.brand span{ letter-spacing:.4px; font-family:Montserrat, Inter, sans-serif; }
+.menu{ display:flex; gap:1.25rem; align-items:center; }
+.menu a{ color:#ffffff; text-decoration:none; font-weight:600; font-family:Montserrat, Inter, sans-serif; font-size:.95rem; opacity:.92; transition: var(--transition); position: relative; padding: 0.5rem 0; }
+.menu a:hover{ opacity:1; transform: translateY(-2px); }
+.menu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent);
+  transition: width 0.3s ease;
+}
+.menu a:hover::after {
+  width: 100%;
+}
+.menu a[style*="background"] { 
+  background: white !important;
+  color: black !important;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.menu a[style*="background"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.7s ease;
+}
+.menu a[style*="background"]:hover::before {
+  left: 100%;
+}
+#nav-toggle{ appearance:none; position:absolute; left:-9999px; }
+.burger{ display:none; gap:.5rem; align-items:center; color:#fff; padding:.5rem .75rem; border:1px solid rgba(255,255,255,.25); border-radius:10px; cursor:pointer; transition: var(--transition); }
+.burger:hover { background: rgba(255,255,255,0.1); }
+.burger svg{ width:20px; height:20px; }
+@media (max-width:900px){
+  .menu{ position:fixed; inset:64px 0 auto 0; background:var(--brand); flex-direction:column; padding:1rem; transform:translateY(-120%); transition:transform .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  #nav-toggle:checked ~ .menu{ transform:translateY(0); }
+  .burger{ display:flex; }
+}
+
+/* Hero with background image + darker overlay for contrast */
+.hero{
+  position:relative; color:#fff;
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+  background-image: linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("images/library.jpg");
+  background-size: cover; background-position:center; background-repeat:no-repeat;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(11, 11, 106, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 123, 37, 0.2) 0%, transparent 40%);
+  z-index: 0;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero h1{ font:700 clamp(1.75rem, 2vw + 1rem, 2.4rem)/1.15 Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; letter-spacing:.2px; }
+.hero .kicker{ display:inline-block; font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; opacity:.9; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; margin-bottom: 1rem; }
+
+/* Main content sections */
+.section-wrap{ padding: clamp(1.75rem, 3vw, 2.75rem) 0; }
+h2.section{ font:700 1.25rem Montserrat, Inter, sans-serif; letter-spacing:.2px; margin:0 0 1rem; color:var(--text); position: relative; display: inline-block; }
+h2.section::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Hours table styling */
+.hours-table {
+  background: #f8fafc;
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow);
+}
+.hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .hours-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Campus card styling */
+.campus-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent);
+  transition: var(--transition);
+}
+.campus-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.campus-card h3 {
+  color: var(--brand);
+  font-family: Montserrat, Inter, sans-serif;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.campus-info {
+  margin-bottom: 1.5rem;
+}
+.campus-info p {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.campus-info strong {
+  min-width: 100px;
+  color: var(--brand);
+}
+
+/* Hours table */
+.hours-table-inner {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.hours-table-inner th,
+.hours-table-inner td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+.hours-table-inner th {
+  background: var(--brand);
+  color: white;
+  font-family: Montserrat, Inter, sans-serif;
+  font-weight: 600;
+}
+.hours-table-inner tr:nth-child(even) {
+  background: #f8fafc;
+}
+.hours-table-inner tr:hover {
+  background: #f1f5f9;
+}
+
+/* Notice box */
+.notice-box {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  color: #856404;
+}
+.notice-box h4 {
+  margin-top: 0;
+  color: #856404;
+  font-family: Montserrat, Inter, sans-serif;
+}
+
+/* Link styling */
+.content-link {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  padding: 0.1rem 0;
+}
+.content-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.content-link.email {
+  color: var(--accent);
+}
+.content-link.email:hover {
+  color: var(--accent-dark);
+}
+
+/* Footer */
+footer{ background:#0b0b3a; color:#cbd5e1; margin-top:2rem; padding: clamp(2rem, 4vw, 3rem) 0; position: relative; overflow: hidden; }
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(11, 11, 106, 0.4) 0%, transparent 50%);
+  z-index: 0;
+}
+footer .container {
+  position: relative;
+  z-index: 1;
+}
+footer a{ color:#fff; text-decoration:none; transition: var(--transition); display: inline-block; }
+footer a:hover{ color: var(--accent-light); text-decoration:underline; transform: translateX(3px); }
+.footer-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:1.5rem; }
+.footer-grid h4{ color:#fff; font:700 1rem Montserrat, Inter, sans-serif; margin:.25rem 0 .75rem; position: relative; display: inline-block; }
+.footer-grid h4::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.footer-grid li{ list-style:none; margin:.45rem 0; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.12); margin-top:1.5rem; padding-top:.75rem; font-size:.9rem; display:flex; gap:.75rem; justify-content:space-between; flex-wrap:wrap; }
+@media (max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .footer-grid{ grid-template-columns:1fr; } }
+
+/* Back button */
+.back-button{ display:inline-flex; align-items:center; gap:.5rem; background:var(--brand); color:#fff; padding:.75rem 1.5rem; border-radius:999px; text-decoration:none; font-weight:600; transition:var(--transition); margin-top:2rem; }
+.back-button:hover{ background:var(--brand-light); transform:translateY(-2px); }
+.back-button svg{ width:16px; height:16px; }
+</style>
+</head>
+
+<body>
+<a href="#main" class="hidden">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <img alt="MCAST" src="https://mcast.edu.mt/wp-content/uploads/New_Logo4-1.png" />
+      <span>MCAST Library</span>
+    </a>
+
+    <label for="nav-toggle" class="burger" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Menu
+    </label>
+    <input id="nav-toggle" type="checkbox" aria-hidden="true">
+
+    <nav class="menu" aria-label="Primary">
+      <a href="index.html#search">Search</a>
+      <a href="index.html#tiles">Help & Services</a>
+      <a href="index.html#hours">Opening Hours</a>
+      <a href="https://mcast.primo.exlibrisgroup.com/discovery/search?vid=356MCAST_INST:MCAST" style="background:#ffffff; color:var(--brand); padding:.45rem .75rem; border-radius:999px; font-weight:800;">Library Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO: opening hours intro -->
+<section class="hero">
+  <div class="container">
+    <span class="kicker">MCAST Library</span>
+    <h1>Library Opening Hours</h1>
+    <p>Find opening times and contact information for all MCAST library locations across Malta and Gozo.</p>
+  </div>
+</section>
+
+<main id="main" class="container">
+  <!-- Important notice -->
+  <section class="section-wrap">
+    <div class="notice-box">
+      <h4>Important Notice</h4>
+      <p><strong>Please note the following general conditions:</strong></p>
+      <ul>
+        <li>The Main Library in Paola operates Monday through Friday, with regular hours from 7:15 a.m. to 4:30 p.m. The library offers extended hours from October to May, remaining open until 7:30 p.m.</li>
+        <li>During the summer break (July to mid-September) and certain holiday periods, the library's hours may be adjusted, closing at 1:30 p.m.</li>
+        <li>The main and offsite libraries are closed on weekends, public holidays, and during the MCAST Christmas shutdown.</li>
+        <li>Offsite libraries are also closed during the Summer term recesses.</li>
+        <li>Offsite libraries will be closed on days when the designated staff member is on leave. We recommend that visitors from outside the respective campuses call to confirm the library's availability before planning their visit.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Campus hours grid -->
+  <section class="section-wrap">
+    <h2 class="section">Library Locations & Hours</h2>
+    <br/><br/><br/>
+    <div class="hours-grid">
+      <!-- Main Campus Library -->
+      <div class="campus-card fade-in">
+        <h3>MCAST Main Campus Library</h3>
+        <div class="campus-info">
+          <p><strong>Location:</strong> MCAST Main Campus, Corradino Hill, Paola PLA 9032, Malta</p>
+          <p><strong>Telephone:</strong> 23987503/2/1</p>
+          <p><strong>Email:</strong> <a href="mailto:LLRC@mcast.edu.mt" class="content-link email">LLRC@mcast.edu.mt</a></p>
+          <p><strong>Library Director:</strong> <a href="mailto:liza.franco@mcast.edu.mt" class="content-link email">Ms. Liza Franco</a></p>
+        </div>
+        <table class="hours-table-inner">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Opening Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monday</td>
+              <td>07:00 – 13:30</td>
+            </tr>
+            <tr>
+              <td>Tuesday</td>
+              <td>07:00 – 13:30</td>
+            </tr>
+            <tr>
+              <td>Wednesday</td>
+              <td>07:00 – 13:30</td>
+            </tr>
+            <tr>
+              <td>Thursday</td>
+              <td>07:00 – 13:30</td>
+            </tr>
+            <tr>
+              <td>Friday</td>
+              <td>07:00 – 13:30</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Institute of Applied Sciences Library -->
+      <div class="campus-card fade-in">
+        <h3>Institute of Applied Sciences – Centre for Agriculture, Aquatics and Animal Sciences Library</h3>
+        <div class="campus-info">
+          <p><strong>Location:</strong> Triq Ħal Luqa, Qormi QRM 9075, Malta</p>
+          <p><strong>Telephone:</strong> 21257106</p>
+          <p><strong>Librarian-in-Charge:</strong> <a href="mailto:carmel.borg@mcast.edu.mt" class="content-link email">Mr. Carmel Borg</a></p>
+        </div>
+        <table class="hours-table-inner">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Opening Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monday - Friday</td>
+              <td>Closed until September 22, 2025, for the summer break.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ICA Library Mosta -->
+      <div class="campus-card fade-in">
+        <h3>Institute for the Creative Arts (ICA) Library – Mosta</h3>
+        <div class="campus-info">
+          <p><strong>Location:</strong> ICA Campus, MCAST, Mosta, Malta</p>
+          <p><strong>Telephone:</strong> 21422536</p>
+          <p><strong>Librarian-in-Charge:</strong> <a href="mailto:liliana.grech@mcast.edu.mt" class="content-link email">Ms. Liliana Grech</a></p>
+        </div>
+        <table class="hours-table-inner">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Opening Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monday - Friday</td>
+              <td>Closed until September 22, 2025, for the summer break.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Gozo Campus -->
+      <div class="campus-card fade-in">
+        <h3>Gozo Campus Learning Resources and Study Room</h3>
+        <div class="campus-info">
+          <p><strong>Location:</strong> J.F. De Chambray Street, Għajnsielem GSM 1053, Gozo</p>
+          <p><strong>Telephone:</strong> 23987500/1/2/3</p>
+          <p><strong>Email:</strong> <a href="mailto:llrc@mcast.edu.mt" class="content-link email">llrc@mcast.edu.mt</a></p>
+        </div>
+        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+          <p><strong>Note:</strong> Please contact for current opening hours and availability.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact information -->
+  <section class="section-wrap">
+    <h2 class="section">Need Help?</h2>
+    
+    <div class="notice-box" style="background: #e3f2fd; border-color: #bbdefb; color: #1565c0;">
+      <h4>We're here to help you!</h4>
+      <ul>
+        <li>Ask at the circulation/help desk</li>
+        <li>Email us at <a href="mailto:LLRC@mcast.edu.mt" class="content-link email">LLRC@mcast.edu.mt</a></li>
+        <li>Phone us on 23987500/1/2/3</li>
+        <li>For off-site libraries' telephone numbers, see the contact information above</li>
+      </ul>
+    </div>
+    
+    <p><em>Last updated: 04 August 2025</em></p>
+  </section>
+
+  <!-- Back to library button -->
+  <a href="index.html" class="back-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    Back to MCAST Library
+  </a>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <section>
+      <h4>Learn with us</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/how-to-apply-online-2/">Apply now</a></li>
+        <li><a href="https://mcast.edu.mt/full-time-programmes/">Institutes</a></li>
+        <li><a href="https://mcast.edu.mt/int-students/">International students</a></li>
+        <li><a href="https://mcast.edu.mt/prospectus-2024-2025/">Prospectus</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>About MCAST</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/about-mcast/">Mission</a></li>
+        <li><a href="https://mcast.edu.mt/wp-content/uploads/MCAST_ACT_JULY_2023.pdf">MCAST Act</a></li>
+        <li><a href="https://mcast.edu.mt/board-of-governors/">Board of Governors</a></li>
+        <li><a href="https://mcast.edu.mt/contact-us/">Contact us</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Know more</h4>
+      <ul>
+        <li><a href="https://mcast.edu.mt/category/mcast_news/">News</a></li>
+        <li><a href="https://mcast.edu.mt/mcast-events/">Events</a></li>
+        <li><a href="https://mcast.edu.mt/data-protection-documents/">Privacy</a></li>
+        <li><a href="https://mcast.edu.mt/foi/">FOI</a></li>
+      </ul>
+    </section>
+    <section>
+      <h4>Visit</h4>
+      <p>MCAST Main Campus, Paola PLA9032, Malta</p>
+      <p><a href="mailto:information@mcast.edu.mt">information@mcast.edu.mt</a> · +356 2398 7100</p>
+    </section>
+  </div>
+  <div class="container footer-bottom">
+    <span>© MCAST Library</span>
+    <span>Accessibility · Cookies · Feedback</span>
+  </div>
+</footer>
+
+<script>
+// Add scroll animation for cards
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.campus-card');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}ms`;
+        entry.target.classList.add('fade-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  cards.forEach((card, index) => {
+    card.dataset.delay = index * 100;
+    observer.observe(card);
+  });
+});
+</script>
+</body>
+</html>
