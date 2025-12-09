@@ -108,12 +108,17 @@ body{
 /* ==============================
    HERO
 ============================== */
-.hero{
-  position:relative; color:#fff;
-  padding:clamp(3rem,6vw,6rem) 0 clamp(2rem,4vw,3rem);
-  /* FIXED: Added ../../ to path because this CSS is in assets/css/ */
-  background-image:linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("../../images/library.jpg");
-  background-size:cover; background-position:center; background-repeat:no-repeat; overflow:hidden;
+.hero {
+  position: relative;
+  color: #fff;
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+  
+  background-image: linear-gradient(135deg, rgba(0, 0, 32, 0.4), rgba(0, 0, 48, 0.5)), url("../../images/library.jpg");
+  
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 .hero::before{
   content:''; position:absolute; inset:0;
