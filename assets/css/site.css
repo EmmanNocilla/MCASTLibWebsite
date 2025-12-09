@@ -111,7 +111,8 @@ body{
 .hero{
   position:relative; color:#fff;
   padding:clamp(3rem,6vw,6rem) 0 clamp(2rem,4vw,3rem);
-  background-image:linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("images/library.jpg");
+  /* FIXED: Added ../../ to path because this CSS is in assets/css/ */
+  background-image:linear-gradient(135deg, rgba(0,0,32,.82), rgba(0,0,48,.88)), url("../../images/library.jpg");
   background-size:cover; background-position:center; background-repeat:no-repeat; overflow:hidden;
 }
 .hero::before{
@@ -187,7 +188,7 @@ h2.section::after{
 }
 
 /* ==============================
-   CARD PATTERN (shared: .card, .quick-link-card, .tip-card, .service-card)
+   CARD PATTERN
 ============================== */
 .card,
 .quick-link-card,
@@ -275,27 +276,107 @@ h2.section::after{
   gap:1rem;
   margin:1.5rem 0;
 }
+
 /* ==============================
-   HOURS SIDEBAR
+   HOURS SIDEBAR (UPDATED)
 ============================== */
 .hours{
-  background:#0f172a; color:#cbd5e1; border-radius:var(--radius);
-  padding:1.5rem; box-shadow:var(--shadow); position:sticky; top:88px;
+  background:#ffffff; 
+  color:var(--text); 
+  border-radius:var(--radius);
+  padding:1.5rem; 
+  box-shadow:var(--shadow); 
+  position:sticky; top:88px;
   transition:var(--transition);
+  border: 1px solid rgba(0,0,0,0.08); /* faint border to define edges */
 }
 .hours:hover{ transform:translateY(-5px); box-shadow:var(--shadow-lg); }
+
 .hours h3{
-  color:#fff; margin:.25rem 0 1rem; font-family:Montserrat, Inter, sans-serif;
+  color:var(--brand); /* changed from white to brand color */
+  margin:.25rem 0 1rem; 
+  font-family:Montserrat, Inter, sans-serif;
   position:relative; display:inline-block;
 }
 .hours h3::after{
   content:''; position:absolute; bottom:-8px; left:0; width:40px; height:2px;
   background:var(--accent); border-radius:2px;
 }
+
 .hours dl{ display:grid; grid-template-columns:1fr auto; gap:.5rem .75rem; margin:0; }
-.hours dt{ opacity:.9; }
-.hours dd{ margin:0; color:#e2e8f0; font-weight:600; }
+.hours dt{ opacity:.9; font-weight:500; }
+.hours dd{ margin:0; color:var(--brand); font-weight:700; } /* changed from #e2e8f0 to brand */
+
 @media (max-width:1100px){ .hours{ margin-top:0; } }
+
+/* Button Outline Style (for "See all campuses") */
+.btn-outline {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: .5rem 1.25rem;
+  border: 2px solid var(--brand);
+  color: var(--brand);
+  background: transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--brand);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ==============================
+   MODAL
+============================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+.modal-overlay.open .modal-content {
+  transform: translateY(0);
+}
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.close-modal:hover { color: var(--text); }
 
 /* ==============================
    CONTENT UTILITIES
@@ -436,8 +517,7 @@ footer a:hover{ color:var(--accent-light); text-decoration:underline; transform:
 .back-button:hover{ background:var(--brand-light); transform:translateY(-2px); }
 .back-button svg{ width:16px; height:16px; }
 
-
-/* 5) Service tables (exact look from original page) */
+/* Service tables */
 .service-table{
   width:100%;
   border-collapse:collapse;
@@ -461,25 +541,5 @@ footer a:hover{ color:var(--accent-light); text-decoration:underline; transform:
 .service-table tr:nth-child(even){ background:#f8fafc; }
 .service-table tr:hover{ background:#f1f5f9; }
 
-/* 6) Info box + links (same styles, in case they were renamed/overridden) */
-.info-box{
-  background:#f1f5f9;
-  border-left:4px solid var(--accent);
-  border-radius:8px;
-  padding:1.5rem;
-  margin:1.5rem 0;
-}
-.info-box h4{
-  margin-top:0; color:var(--brand);
-  font-family:Montserrat, Inter, sans-serif;
-}
-.content-link{
-  color:var(--brand); text-decoration:none; font-weight:600; transition:var(--transition);
-  border-bottom:2px solid transparent; padding:.1rem 0;
-}
-.content-link:hover{ color:var(--accent); border-bottom-color:var(--accent); }
-.content-link.email{ color:var(--accent); }
-.content-link.email:hover{ color:var(--accent-dark); }
-
-/* 7) Smooth scrolling for anchor links (safe to keep globally) */
+/* Global smooth scrolling */
 html{ scroll-behavior:smooth; }
