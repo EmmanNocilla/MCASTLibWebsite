@@ -42,7 +42,7 @@ body{ margin:0; font-family:Montserrat, system-ui, -apple-system, Segoe UI, Robo
 }
 
 
-@keyframes tileSweep{ from{ transform:translateX(-35%);} to{ transform:translateX(35%);} }
+@keyframes tileSweep{ from{ background-position:-150% 0;} to{ background-position:150% 0;} }
 /* Header */
 .site-header{
   position:sticky; top:0; z-index:1000;
@@ -202,13 +202,15 @@ h2.section::after {
   right: 0;
   bottom: 0;
   background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.18) 45%, rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+  background-position: -150% 0;
+  background-repeat: no-repeat;
   opacity: 0;
-  transform: translateX(-35%);
   transition: opacity 0.2s ease;
 }
 .card:hover::before {
   opacity: 1;
-  animation: tileSweep 0.6s ease;
+  animation: tileSweep 0.6s ease both;
 }
 .card:focus-visible{ box-shadow:none; }
 .card:hover{ transform:none; box-shadow:none; border-color:rgba(255,255,255,.18); background: var(--brand); }
