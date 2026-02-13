@@ -7,7 +7,7 @@
 <meta name="description" content="MCAST Library — search, opening hours, support." />
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -30,7 +30,7 @@
 *{ box-sizing:border-box; }
 :focus{ outline:2px solid transparent; box-shadow:var(--ring); }
 html,body{ height:100%; }
-body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
+body{ margin:0; font-family:Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.55; }
 .container{ width:min(1200px, 92vw); margin-inline:auto; }
 .hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); }
 
@@ -52,7 +52,7 @@ body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, A
 .nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 0; }
 .brand{ display:flex; align-items:center; gap:.75rem; text-decoration:none; color:#fff; font-weight:700; transition: var(--transition); }
 .brand:hover { transform: translateY(-2px); }
-.brand img{ height:40px; width:auto; transition: var(--transition); }
+.brand img{ height:58px; width:auto; transition: var(--transition); }
 .brand:hover img { transform: scale(1.05); }
 .brand span{ letter-spacing:.4px; font-family:Montserrat, Inter, sans-serif; }
 .menu{ display:flex; gap:1.25rem; align-items:center; }
@@ -189,7 +189,7 @@ h2.section::after {
   box-shadow:var(--shadow);
   overflow:hidden;
   transition: var(--transition);
-  min-height: 180px;
+  min-height: 230px;
   position: relative;
   overflow: hidden;
 }
@@ -213,7 +213,7 @@ h2.section::after {
 /* icon bar */
 .card .thumb{
   display:flex; align-items:center; gap:.9rem;
-  padding:1.1rem 1.1rem .6rem;
+  padding:1.3rem 1.2rem .8rem;
   position: relative;
   z-index: 1;
 }
@@ -237,7 +237,7 @@ h2.section::after {
 }
 
 /* text */
-.card h3{ margin:.2rem 1.1rem 0; font:700 1.05rem Montserrat, Inter, sans-serif; color:#fff; letter-spacing:.2px; position: relative; z-index: 1; transition: var(--transition); }
+.card h3{ margin:.2rem 1.1rem 0; font:700 1.15rem/1.35 Montserrat, sans-serif; color:#fff; letter-spacing:.2px; position: relative; z-index: 1; transition: var(--transition); }
 .card:hover h3 {
   transform: translateX(5px);
   color: var(--accent-light);
@@ -365,7 +365,7 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
       <div class="card-grid">
 
         <!-- Search Tips -->
-        <a class="card fade-in" href="searchTips.html" aria-label="Search Tips">
+        <a class="card fade-in" href="#search-tips" aria-label="Search Tips">
           <div class="thumb">
             <span class="icon" aria-hidden="true">
               <!-- magnifier -->
@@ -379,7 +379,7 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
         </a>
 
         <!-- New Users -->
-        <a class="card fade-in" href="newUsers.html" aria-label="New Users">
+        <a class="card fade-in" href="#new-users" aria-label="New Users">
           <div class="thumb">
             <span class="icon" aria-hidden="true">
               <!-- user -->
@@ -393,7 +393,7 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
         </a>
 
         <!-- Suggest a Purchase -->
-        <a class="card fade-in" href="purcahseResources.html" aria-label="Suggest a Purchase">
+        <a class="card fade-in" href="#suggest-purchase" aria-label="Suggest a Purchase">
           <div class="thumb">
             <span class="icon" aria-hidden="true">
               <!-- clipboard -->
@@ -408,7 +408,7 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
         </a>
 
         <!-- Contact Points -->
-        <a class="card fade-in" href="contacts.html" aria-label="Contact Points">
+        <a class="card fade-in" href="#contact-points" aria-label="Contact Points">
           <div class="thumb">
             <span class="icon" aria-hidden="true">
               <!-- phone -->
@@ -421,7 +421,7 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
         </a>
 
         <!-- Library Services -->
-        <a class="card fade-in" href="services.html" aria-label="Library Services">
+        <a class="card fade-in" href="#library-services" aria-label="Library Services">
           <div class="thumb">
             <span class="icon" aria-hidden="true">
               <!-- books -->
@@ -460,8 +460,39 @@ footer a:hover{ color: var(--accent-light); text-decoration:underline; transform
         <dt>Sat</dt><dd>Closed</dd>
         <dt>Sun & Public Holidays</dt><dd>Closed</dd>
       </dl>
-      <p style="margin-top:.85rem;">See <a href="openingHours.html">all campuses</a>.</p>
+      <p style="margin-top:.85rem;">See <a href="#hours-details">all campuses</a>.</p>
     </aside>
+  </section>
+
+  <section id="search-tips" class="section-wrap">
+    <h2 class="section">Search Tips</h2>
+    <p>Use short keywords first, then refine with filters such as date, resource type, and peer-reviewed content. Use quotation marks for exact phrases and combine concepts with AND/OR when needed.</p>
+  </section>
+
+  <section id="new-users" class="section-wrap">
+    <h2 class="section">New Users</h2>
+    <p>New students and staff can access digital resources with their institutional credentials. For account issues, contact the library team at <a href="mailto:library@mcast.edu.mt">library@mcast.edu.mt</a>.</p>
+  </section>
+
+  <section id="suggest-purchase" class="section-wrap">
+    <h2 class="section">Suggest a Purchase</h2>
+    <p>Recommend books, journals, or databases to support your learning and research needs. Include title, author, and reason for request when contacting the library desk.</p>
+  </section>
+
+  <section id="contact-points" class="section-wrap">
+    <h2 class="section">Contact Points</h2>
+    <p>Email: <a href="mailto:library@mcast.edu.mt">library@mcast.edu.mt</a> · Phone: +356 2398 7100</p>
+    <p>Main Campus Library, Paola PLA9032, Malta.</p>
+  </section>
+
+  <section id="library-services" class="section-wrap">
+    <h2 class="section">Library Services</h2>
+    <p>Borrowing, returns, study support, referencing guidance, printing, scanning, and access to online academic resources are available through the library team.</p>
+  </section>
+
+  <section id="hours-details" class="section-wrap">
+    <h2 class="section">Opening Hours - All Campuses</h2>
+    <p>Please contact your campus library for any temporary timetable updates during holidays or exam periods.</p>
   </section>
 </main>
 
